@@ -5,6 +5,8 @@ escapeHtml,
 formatDate,
 formatTime,
 formatTextValue,
+todayIso,
+earliestTimeForDate,
 conditions,
 appointmentStatuses,
 readingStatuses,
@@ -299,6 +301,38 @@ return;
 element.classList.toggle(invalidFieldClasses[0], isInvalid);
 element.classList.toggle(invalidFieldClasses[1], isInvalid);
 element.classList.toggle(invalidFieldClasses[2], isInvalid);
+}
+
+// حدود حقلي التاريخ والوقت بأي نموذج موعد: حقل التاريخ ما بيقبل يوم فات، وإذا اليوم
+// المختار هو اليوم بيصير حقل الوقت كمان ما بيقبل ساعة مضت. بنعيد الحساب مع كل تغيير
+// للتاريخ وقبل ما المستخدم يفتح حقل الوقت، فالحدود بتضل مضبوطة حتى لو ضلت الصفحة
+// مفتوحة والوقت ماشي. هاد إرشاد بالواجهة — الرفض الحقيقي بطبقة قواعد المواعيد.
+// بترجّع دالة الضبط نفسها، عشان النموذج يعيد استدعاءها بعد ما يفضّي حقوله.
+export function limitToFutureSlots(dateInput, timeInput) {
+function syncLimits() {
+if (!dateInput || !timeInput) {
+return;
+}
+
+dateInput.min = todayIso();
+
+const earliestTime = earliestTimeForDate(dateInput.value);
+
+if (earliestTime) {
+timeInput.min = earliestTime;
+} else {
+timeInput.removeAttribute("min");
+}
+}
+
+if (dateInput && timeInput) {
+dateInput.addEventListener("change", syncLimits);
+timeInput.addEventListener("focus", syncLimits);
+}
+
+syncLimits();
+
+return syncLimits;
 }
 
 // بنظهر أو بنخفي رسالة الخطأ تحت الحقل
