@@ -14,6 +14,7 @@ confirmDialog,
 showToast,
 setFieldError,
 setFieldInvalid,
+limitToFutureSlots,
 renderIcons
 } from "./ui.js";
 import {
@@ -55,21 +56,9 @@ select.innerHTML = `<option value="">اختر المريض</option>${allPatients
 select.value = selectedId;
 }
 
-// حقل التاريخ ما بيقبل قبل اليوم، وإذا التاريخ المختار هو اليوم بنمنع الساعات اللي فاتت كمان.
-// هاد إرشاد للمستخدم بس — الرفض الحقيقي بيصير بالتحقق قبل الحفظ.
-function syncTimeLimit() {
-const dateInput = document.getElementById("appointmentDate");
-const timeInput = document.getElementById("appointmentTime");
-
-if (dateInput.value !== todayIso()) {
-timeInput.removeAttribute("min");
-return;
-}
-
-const now = new Date();
-
-timeInput.min = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
-}
+// دالة ضبط حدود التاريخ والوقت لنموذج الإضافة. بتتظبط وقت ربط الأحداث، وبنحتفظ فيها
+// هون عشان نعيد استدعاءها بعد ما نفضّي النموذج — لأن التفضية بترجّع الحقول فاضية.
+let syncSlotLimits = () => {};
 
 function readFormValues() {
 return {
@@ -95,7 +84,7 @@ setFieldInvalid(document.getElementById(elementId), Boolean(message));
 function resetForm() {
 document.getElementById("appointmentForm").reset();
 showFormErrors({});
-syncTimeLimit();
+syncSlotLimits();
 }
 
 // التصفية: بنقرأ اللي اختاره المستخدم بالفلاتر أو اللي إجا جاهز بالرابط، وبنرجّع المواعيد المطابقة بس — بلا ما نلمس أي بيانات محفوظة
@@ -214,7 +203,7 @@ addActivity({ patientId: appointment.patientId, title: titles[action], message: 
 function editPanelFields() {
 return [
 { name: "patientId", label: "المريض", type: "select", placeholder: "اختر المريض", options: allPatients.map((patient) => ({ value: patient.id, label: patient.name })) },
-{ name: "date", label: "التاريخ", type: "date", min: todayIso() },
+{ name: "date", label: "التاريخ", type: "date" },
 { name: "time", label: "الوقت", type: "time" },
 { name: "status", label: "حالة الموعد", type: "select", options: Object.values(appointmentStatuses).map((status) => ({ value: status, label: status })) },
 { name: "reason", label: "سبب الزيارة", type: "text", placeholder: "مثال: متابعة ضغط الدم", span: 2 }
@@ -267,6 +256,9 @@ await refreshAppointments();
 refreshAlerts();
 },
 onDelete: () => deleteAppointmentWithConfirm(appointment),
+// نفس حدود نموذج الإضافة بتنطبق على حقول اللوحة بعد ما تنرسم: لا يوم فات،
+// ولا ساعة مضت إذا كان التاريخ هو اليوم
+onReady: (panel) => limitToFutureSlots(panel.querySelector("#editField_date"), panel.querySelector("#editField_time")),
 onClose: () => {
 editingId = "";
 renderAppointments();
@@ -280,12 +272,10 @@ function bindEvents() {
 bindFilterEvents();
 
 const form = document.getElementById("appointmentForm");
-const dateInput = document.getElementById("appointmentDate");
 
-// أقدم تاريخ مسموح هو اليوم — بنكتبه من هون لأنه بيتغير كل يوم
-dateInput.min = todayIso();
-dateInput.addEventListener("change", syncTimeLimit);
-syncTimeLimit();
+// أقدم تاريخ مسموح هو اليوم، وإذا كان الموعد اليوم فأقدم وقت هو الساعة الحالية —
+// بنحسبهم من هون لأنهم بيتغيروا مع مرور الوقت مش قيم ثابتة بالـHTML
+syncSlotLimits = limitToFutureSlots(document.getElementById("appointmentDate"), document.getElementById("appointmentTime"));
 
 form.addEventListener("submit", async (event) => {
 event.preventDefault();
