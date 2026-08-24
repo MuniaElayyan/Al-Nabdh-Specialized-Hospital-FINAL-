@@ -22,6 +22,7 @@ escapeHtml,
 formatDate,
 formatTime,
 todayIso,
+getPastSlotErrors,
 normalizeTime,
 isUpcomingAppointment,
 summarizeAppointments,
@@ -308,7 +309,17 @@ showToast(error.message || "تعذر حفظ الموعد.", "error");
 document.getElementById(elementId).addEventListener("change", async () => {
 const values = readFormValues();
 
+// منع الماضي ما بيستنى اختيار المريض: أول ما ينحدد تاريخ ووقت ماضيين بيبيّن الاعتراض،
+// لأن فحص التعارض لحاله هو اللي محتاج يعرف مين المريض.
+const pastErrors = values.date && values.time ? getPastSlotErrors(values.date, values.time) : {};
+
+if (pastErrors.date || pastErrors.time) {
+showFormErrors(pastErrors);
+return;
+}
+
 if (!values.date || !values.time || !values.patientId) {
+showFormErrors({});
 return;
 }
 
