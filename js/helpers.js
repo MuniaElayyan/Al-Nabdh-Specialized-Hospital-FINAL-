@@ -357,6 +357,25 @@ return {};
 return String(dateIso) < todayIso() ? { date: pastDateMessage } : { time: pastTimeMessage };
 }
 
+// خانة وقت اختيارية (مثل أول زيارة بنموذج تسجيل مريض): إذا المستخدم ما عبّاها أصلًا
+// فما في خطأ، وإذا بلّش يعبّيها بتنطبق نفس قواعد المواعيد — التاريخ والوقت بينكتبوا سوا
+// لأن الموعد ما بينحجز بواحد منهم، والوقت لازم يكون قادم مش ماضي.
+export function getOptionalSlotErrors(dateIso, timeValue) {
+if (!dateIso && !timeValue) {
+return {};
+}
+
+if (!dateIso) {
+return { date: "يرجى تحديد تاريخ الزيارة مع وقتها." };
+}
+
+if (!timeValue) {
+return { time: "يرجى تحديد وقت الزيارة مع تاريخها." };
+}
+
+return getPastSlotErrors(dateIso, timeValue);
+}
+
 // رسالة التعارض بتقول للمستخدم ليش انرفض الموعد بالضبط: مع مين ومتى
 export function getConflictMessage(conflictingAppointment) {
 const patientName = conflictingAppointment.patient ? conflictingAppointment.patient.name : "";
