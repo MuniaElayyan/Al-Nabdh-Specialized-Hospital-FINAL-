@@ -650,7 +650,7 @@ export function isValidBloodPressure(value) {
 return getBloodPressureError(value) === "";
 }
 
-// حدود نبض القلب: أي رقم برا هالمدى بينرفض، وهي نفس الأرقام المكتوبة بصفحة الدليل
+// حدود نبض القلب: أي رقم برا هالمدى بينرفض
 export const heartRateLimits = { min: 20, max: 220 };
 
 export function getHeartRateError(value) {
