@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth overflow-x-clip">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مستشفى النبض التخصصي لأمراض القلب</title>
+<meta name="description" content="مستشفى تخصصي لرعاية مرضى القلب: تشخيص دقيق، متابعة مستمرة للعلامات الحيوية، وفريق طبي متكامل.">
+<link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap">
+<!-- إعدادات الهوية اللونية والحركات — Tailwind يبنيها من JavaScript بلا أي ملف CSS -->
+<script src="js/tailwind-theme.js"></script>
+<script>if (localStorage.getItem("cardiac.theme") === "dark") { document.documentElement.style.backgroundColor = "#071510"; }</script>
+</head>
+<body class="min-h-screen overflow-x-clip bg-surface text-slate-800 antialiased [font-family:'Cairo','Segoe_UI',Tahoma,Arial,sans-serif]">
+
+<!-- الشريط العلوي -->
+<header class="sticky top-0 z-40 border-b border-slate-200 bg-surface/90 backdrop-blur">
+<div class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+<a href="#top" class="flex items-center gap-3">
+<img src="images/logo.svg" alt="" aria-hidden="true" class="h-10 w-10">
+<span>
+<span class="block text-sm font-bold text-slate-900 sm:text-base">مستشفى النبض التخصصي</span>
+<span class="block text-xs text-slate-500">لأمراض القلب والشرايين</span>
+</span>
+</a>
+
+<nav aria-label="روابط الصفحة" class="hidden items-center gap-1 lg:flex">
+<a href="#about" class="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition duration-300 hover:bg-slate-50 hover:text-teal-700">نبذة عنا</a>
+<a href="#story" class="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition duration-300 hover:bg-slate-50 hover:text-teal-700">مسيرتنا</a>
+<a href="#services" class="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition duration-300 hover:bg-slate-50 hover:text-teal-700">خدماتنا</a>
+<a href="#staff" class="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition duration-300 hover:bg-slate-50 hover:text-teal-700">الكادر الطبي</a>
+<a href="#technology" class="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition duration-300 hover:bg-slate-50 hover:text-teal-700">التقنيات</a>
+<a href="#tour" class="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition duration-300 hover:bg-slate-50 hover:text-teal-700">جولة</a>
+</nav>
+
+<div class="flex items-center gap-2">
+<button data-theme-toggle type="button"
+class="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 text-slate-600 transition duration-300 hover:-translate-y-0.5 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-teal-200"></button>
+
+<a href="login.html"
+class="inline-flex h-11 items-center gap-2 rounded-xl bg-brand px-4 text-sm font-semibold text-white shadow-sm transition duration-300 hover:-translate-y-0.5 hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-teal-300">
+<i data-lucide="log-in" class="h-4 w-4" aria-hidden="true"></i>
+<span class="hidden sm:inline">دخول الطاقم</span>
+<span class="sm:hidden">دخول</span>
+</a>
+
+<button id="openMenu" type="button" aria-label="فتح القائمة" aria-expanded="false" aria-controls="mobileMenu"
+class="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 text-slate-600 transition duration-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-teal-200 lg:hidden">
+<i data-lucide="menu" class="h-5 w-5" aria-hidden="true"></i>
+</button>
+</div>
+</div>
+
+<!-- قائمة الهاتف: نفس روابط الشريط، بتنفتح وبتنسكّر بزر واحد -->
+<nav id="mobileMenu" aria-label="روابط الصفحة للهاتف" class="hidden border-t border-slate-200 bg-surface px-4 pb-4 pt-2 lg:hidden">
+<a href="#about" class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-600 transition duration-300 hover:bg-slate-50 hover:text-teal-700">نبذة عنا</a>
+<a href="#story" class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-600 transition duration-300 hover:bg-slate-50 hover:text-teal-700">مسيرتنا</a>
+<a href="#services" class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-600 transition duration-300 hover:bg-slate-50 hover:text-teal-700">خدماتنا</a>
+<a href="#staff" class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-600 transition duration-300 hover:bg-slate-50 hover:text-teal-700">الكادر الطبي</a>
+<a href="#technology" class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-600 transition duration-300 hover:bg-slate-50 hover:text-teal-700">التقنيات</a>
+<a href="#tour" class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-slate-600 transition duration-300 hover:bg-slate-50 hover:text-teal-700">جولة</a>
+</nav>
+</header>
+
+<main id="top">
+
+<!-- الواجهة الرئيسية -->
+<section class="relative isolate overflow-hidden">
+<img src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=1920&q=70"
+alt="" aria-hidden="true"
+data-fade class="absolute inset-0 -z-10 h-full w-full object-cover">
+<div class="absolute inset-0 -z-10 bg-ink/55" aria-hidden="true"></div>
+<div class="absolute inset-0 -z-10 bg-gradient-to-l from-ink/90 via-ink/55 to-ink/10" aria-hidden="true"></div>
+
+<div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36">
+<div data-stagger class="max-w-2xl">
+<p class="inline-flex items-center gap-2 rounded-xl border border-white/25 bg-white/10 px-3 py-2 text-sm font-semibold text-white backdrop-blur">
+<i data-lucide="heart-pulse" class="h-4 w-4" aria-hidden="true"></i>
+رعاية قلبية متخصصة على مدار الساعة
+</p>
+
+<h1 class="mt-6 text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
+رعاية إنسانية،<br>وطب قلب متقدّم.
+</h1>
+
+<p class="mt-6 max-w-xl text-base leading-8 text-white/90 sm:text-lg">
+نرافق مرضى القلب في كل خطوة: تشخيص دقيق، متابعة يومية للمؤشرات الحيوية،
+وفريق طبي يضع راحة المريض وطمأنينة عائلته في المقدمة.
+</p>
+
+<div class="mt-9 flex flex-wrap items-center gap-3">
+<a href="login.html"
+class="group inline-flex h-12 items-center gap-2 rounded-xl bg-gradient-to-l from-brand to-brand-dark hover:from-brand-dark hover:to-brand px-5 text-sm font-semibold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-teal-300">
+<i data-lucide="log-in" class="h-5 w-5" aria-hidden="true"></i>
+دخول الطاقم الطبي
+<i data-lucide="arrow-left" class="h-4 w-4 transition duration-300 group-hover:-translate-x-1" aria-hidden="true"></i>
+</a>
+<a href="#about"
+class="inline-flex h-12 items-center gap-2 rounded-xl border border-white/40 bg-white/10 px-5 text-sm font-semibold text-white backdrop-blur transition duration-300 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50">
+<i data-lucide="info" class="h-5 w-5" aria-hidden="true"></i>
+تعرّف على المستشفى
+</a>
+</div>
+
+<dl class="mt-12 grid max-w-xl grid-cols-2 gap-3 sm:grid-cols-3">
+<div class="rounded-2xl border border-white/20 bg-white/10 p-4 backdrop-blur">
+<dt class="text-xs font-semibold text-white/75">وحدة مراقبة</dt>
+<dd class="mt-1 text-sm font-bold text-white">متابعة على مدار الساعة</dd>
+</div>
+<div class="rounded-2xl border border-white/20 bg-white/10 p-4 backdrop-blur">
+<dt class="text-xs font-semibold text-white/75">فريق متخصص</dt>
+<dd class="mt-1 text-sm font-bold text-white">استشاريون وأخصائيون</dd>
+</div>
+<div class="col-span-2 rounded-2xl border border-white/20 bg-white/10 p-4 backdrop-blur sm:col-span-1">
+<dt class="text-xs font-semibold text-white/75">ملف المريض</dt>
+<dd class="mt-1 text-sm font-bold text-white">سجل طبي منظم</dd>
+</div>
+</dl>
+</div>
+</div>
+</section>
+
+<!-- نبذة عن المستشفى -->
+<section id="about" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+<div class="grid items-center gap-10 lg:grid-cols-2">
+<div data-reveal="right">
+<p class="text-sm font-bold text-teal-700">نبذة عنا</p>
+<h2 class="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">مستشفى متخصص بأمراض القلب</h2>
+<p class="mt-5 text-base leading-8 text-slate-600">
+نُعنى برعاية مرضى القلب والشرايين ضمن بيئة طبية هادئة ومجهزة.
+نبدأ من التشخيص الدقيق، ونستمر مع المريض في المتابعة الدورية،
+حتى يعود إلى حياته اليومية باطمئنان.
+</p>
+
+<ul data-stagger class="mt-8 grid gap-4 sm:grid-cols-2">
+<li class="flex items-start gap-3">
+<span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-600">
+<i data-lucide="heart-pulse" class="h-5 w-5" aria-hidden="true"></i>
+</span>
+<span>
+<span class="block text-sm font-bold text-slate-900">تركيز على القلب</span>
+<span class="mt-1 block text-sm leading-6 text-slate-500">تخصص دقيق بدل الرعاية العامة</span>
+</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-700">
+<i data-lucide="users-round" class="h-5 w-5" aria-hidden="true"></i>
+</span>
+<span>
+<span class="block text-sm font-bold text-slate-900">فريق متكامل</span>
+<span class="mt-1 block text-sm leading-6 text-slate-500">أطباء وتمريض وفريق مساند</span>
+</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sky-700">
+<i data-lucide="clipboard-list" class="h-5 w-5" aria-hidden="true"></i>
+</span>
+<span>
+<span class="block text-sm font-bold text-slate-900">سجل منظم</span>
+<span class="mt-1 block text-sm leading-6 text-slate-500">بيانات المريض في مكان واحد</span>
+</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+<i data-lucide="shield-check" class="h-5 w-5" aria-hidden="true"></i>
+</span>
+<span>
+<span class="block text-sm font-bold text-slate-900">بيئة آمنة</span>
+<span class="mt-1 block text-sm leading-6 text-slate-500">إجراءات سلامة واضحة</span>
+</span>
+</li>
+</ul>
+</div>
+
+<div class="relative" data-reveal="left">
+<span class="group block overflow-hidden overflow-hidden rounded-3xl shadow-xl">
+<img src="https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&w=900&q=70"
+alt="طبيبة تتحدث مع مريضة داخل غرفة الفحص"
+loading="lazy"
+data-fade class="h-[360px] w-full object-cover sm:h-[440px]">
+</span>
+<div class="transition duration-300 hover:-translate-y-1 hover:border-teal-300 hover:shadow-lg animate-float absolute -bottom-6 right-6 hidden w-64 rounded-2xl border border-slate-200 bg-surface p-4 shadow-lg sm:block">
+<div class="flex items-center gap-3">
+<span class="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50 text-teal-700">
+<i data-lucide="stethoscope" class="h-5 w-5" aria-hidden="true"></i>
+</span>
+<div>
+<p class="text-sm font-bold text-slate-900">رعاية تتمحور حول المريض</p>
+<p class="mt-1 text-xs text-slate-500">وقت كافٍ لكل حالة</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- مسيرتنا -->
+<section id="story" class="bg-slate-50 py-16 sm:py-20">
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+<div class="grid items-center gap-10 lg:grid-cols-2">
+<span class="group order-last block overflow-hidden overflow-hidden rounded-3xl shadow-lg lg:order-first" data-reveal="left">
+<img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=900&q=70"
+alt="مدخل الاستقبال داخل المستشفى"
+loading="lazy"
+data-fade class="h-[320px] w-full object-cover sm:h-[400px]">
+</span>
+
+<div data-reveal="right">
+<p class="text-sm font-bold text-teal-700">مسيرتنا</p>
+<h2 class="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">بدأنا بعيادة واحدة</h2>
+<p class="mt-5 text-base leading-8 text-slate-600">
+انطلق المستشفى كعيادة صغيرة لمتابعة مرضى ضغط الدم واضطرابات النظم.
+ومع ازدياد الحالات التي تحتاج متابعة يومية، توسّعت العيادة إلى وحدة كاملة
+للرعاية القلبية، ثم إلى مستشفى تخصصي يجمع التشخيص والمتابعة والمراقبة
+تحت سقف واحد.
+</p>
+
+<ol data-stagger class="mt-8 space-y-4">
+<li class="flex gap-4">
+<span class="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface text-teal-700 shadow-sm">
+<i data-lucide="sprout" class="h-4 w-4" aria-hidden="true"></i>
+</span>
+<span>
+<span class="block text-sm font-bold text-slate-900">البداية</span>
+<span class="mt-1 block text-sm leading-7 text-slate-500">عيادة لمتابعة أمراض القلب المزمنة.</span>
+</span>
+</li>
+<li class="flex gap-4">
+<span class="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface text-teal-700 shadow-sm">
+<i data-lucide="activity" class="h-4 w-4" aria-hidden="true"></i>
+</span>
+<span>
+<span class="block text-sm font-bold text-slate-900">وحدة المراقبة</span>
+<span class="mt-1 block text-sm leading-7 text-slate-500">متابعة مستمرة للعلامات الحيوية للحالات الحرجة.</span>
+</span>
+</li>
+<li class="flex gap-4">
+<span class="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface text-teal-700 shadow-sm">
+<i data-lucide="hospital" class="h-4 w-4" aria-hidden="true"></i>
+</span>
+<span>
+<span class="block text-sm font-bold text-slate-900">اليوم</span>
+<span class="mt-1 block text-sm leading-7 text-slate-500">مستشفى تخصصي بفريق كامل وسجل طبي منظم.</span>
+</span>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+
+<!-- الخدمات -->
+<section id="services" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+<div class="max-w-2xl" data-reveal>
+<p class="text-sm font-bold text-teal-700">خدماتنا</p>
+<h2 class="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">خدمات القلب والشرايين</h2>
+<p class="mt-4 text-base leading-8 text-slate-600">
+كل الخدمات المذكورة متاحة داخل المستشفى، من الكشف الأولي حتى القسطرة والتأهيل بعدها.
+</p>
+</div>
+
+<div id="servicesGrid" class="mt-10"></div>
+</section>
+
+<!-- الكادر الطبي -->
+<section id="staff" class="bg-slate-50 py-16 sm:py-20">
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+<div class="max-w-2xl" data-reveal>
+<p class="text-sm font-bold text-teal-700">من يعمل معك</p>
+<h2 class="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">الكادر الطبي</h2>
+<p class="mt-4 text-base leading-8 text-slate-600">
+الطبيب والممرضة وموظف الاستقبال — نفس الكادر الذي يدير النظام من بوابة الطاقم.
+</p>
+</div>
+
+<div id="staffGrid" class="mt-10"></div>
+</div>
+</section>
+
+<!-- التقنيات الطبية -->
+<section id="technology" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+<div class="max-w-2xl" data-reveal>
+<p class="text-sm font-bold text-teal-700">التقنيات الطبية</p>
+<h2 class="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">ما نعتمد عليه في المتابعة</h2>
+<p class="mt-4 text-base leading-8 text-slate-600">
+أجهزة تساعد الفريق على قراءة حالة المريض بدقة واتخاذ القرار في وقته.
+</p>
+</div>
+
+<div id="technologyGrid" class="mt-10"></div>
+</section>
+
+<!-- جولة داخل المستشفى -->
+<section id="tour" class="bg-ink py-16 sm:py-20">
+<div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+<div class="max-w-2xl" data-reveal>
+<p class="text-sm font-bold text-teal-300">جولة</p>
+<h2 class="mt-2 text-3xl font-bold text-white sm:text-4xl">داخل المستشفى</h2>
+<p class="mt-4 text-base leading-8 text-white/70">
+نظرة قصيرة على العيادات وبيئة العمل ووحدة المراقبة.
+</p>
+</div>
+
+<div class="relative mt-10 overflow-hidden rounded-3xl border border-white/10 shadow-2xl" data-reveal="zoom">
+<div id="tourPoster" class="relative">
+<img src="images/tour-poster.jpg"
+alt="فريق طبي يتابع حالة مريض على شاشة المراقبة"
+data-fade class="aspect-video w-full object-cover">
+<div class="absolute inset-0 bg-ink/45" aria-hidden="true"></div>
+<button id="playTour" type="button" aria-label="تشغيل جولة المستشفى"
+class="group absolute inset-0 flex items-center justify-center">
+<span class="flex h-20 w-20 items-center justify-center rounded-full bg-surface/90 text-teal-700 shadow-xl transition duration-300 group-hover:scale-105 group-hover:bg-surface">
+<i data-lucide="play" class="h-8 w-8" aria-hidden="true"></i>
+</span>
+</button>
+<p class="absolute bottom-4 right-4 inline-flex items-center gap-2 rounded-xl bg-ink/65 px-3 py-2 text-xs font-semibold text-white backdrop-blur">
+<i data-lucide="video" class="h-3.5 w-3.5" aria-hidden="true"></i>
+جولة تعريفية قصيرة
+</p>
+</div>
+
+<video id="tourVideo" class="hidden aspect-video w-full bg-black"
+controls playsinline preload="none" poster="images/tour-poster.jpg">
+<source src="media/hospital-tour.mp4" type="video/mp4">
+</video>
+
+<p id="tourMessage" class="hidden bg-ink px-4 py-4 text-center text-sm font-semibold text-white/70">
+الجولة المصوّرة قيد الإعداد وستكون متاحة قريبًا.
+</p>
+</div>
+</div>
+</section>
+
+<!-- دعوة الدخول -->
+<section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+<div class="transition duration-300 hover:-translate-y-1 hover:border-teal-300 hover:shadow-lg flex flex-col items-start justify-between gap-6 rounded-3xl border border-teal-100 bg-teal-50 p-8 sm:p-10 lg:flex-row lg:items-center" data-reveal="zoom">
+<div>
+<h2 class="text-2xl font-bold text-slate-900 sm:text-3xl">بوابة الطاقم الطبي</h2>
+<p class="mt-3 max-w-2xl text-base leading-8 text-slate-600">
+مساحة عمل داخلية لأعضاء الفريق لمتابعة ملفات المرضى والمواعيد والقراءات الحيوية.
+</p>
+</div>
+<a href="login.html"
+class="group inline-flex h-12 shrink-0 items-center gap-2 rounded-xl bg-gradient-to-l from-brand to-brand-dark hover:from-brand-dark hover:to-brand px-5 text-sm font-semibold text-white shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-teal-300">
+<i data-lucide="log-in" class="h-5 w-5" aria-hidden="true"></i>
+الدخول إلى البوابة
+<i data-lucide="arrow-left" class="h-4 w-4 transition duration-300 group-hover:-translate-x-1" aria-hidden="true"></i>
+</a>
+</div>
+</section>
+</main>
+
+<!-- التذييل -->
+<footer class="border-t border-slate-200 bg-surface">
+<div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+<div data-stagger class="grid gap-10 md:grid-cols-3" data-reveal>
+<div>
+<div class="flex items-center gap-3">
+<img src="images/logo.svg" alt="" aria-hidden="true" class="h-10 w-10">
+<div>
+<p class="text-sm font-bold text-slate-900">مستشفى النبض التخصصي</p>
+<p class="text-xs text-slate-500">لأمراض القلب والشرايين</p>
+</div>
+</div>
+<p class="mt-4 max-w-sm text-sm leading-7 text-slate-500">
+رعاية قلبية متخصصة تجمع التشخيص والمتابعة والمراقبة في مكان واحد.
+</p>
+</div>
+
+<div>
+<p class="text-sm font-bold text-slate-900">روابط سريعة</p>
+<ul class="mt-4 space-y-2 text-sm text-slate-500">
+<li><a href="#about" class="transition duration-300 hover:text-teal-700">نبذة عنا</a></li>
+<li><a href="#services" class="transition duration-300 hover:text-teal-700">خدماتنا</a></li>
+<li><a href="#staff" class="transition duration-300 hover:text-teal-700">الكادر الطبي</a></li>
+<li><a href="login.html" class="transition duration-300 hover:text-teal-700">دخول الطاقم</a></li>
+</ul>
+</div>
+
+<div>
+<p class="text-sm font-bold text-slate-900">تواصل معنا</p>
+<ul class="mt-4 space-y-3 text-sm text-slate-500">
+<li class="flex items-center gap-2">
+<i data-lucide="map-pin" class="h-4 w-4 text-teal-600" aria-hidden="true"></i>
+فلسطين — شارع المستشفيات
+</li>
+<li class="flex items-center gap-2">
+<i data-lucide="phone" class="h-4 w-4 text-teal-600" aria-hidden="true"></i>
+0599 000 000
+</li>
+<li class="flex items-center gap-2">
+<i data-lucide="clock" class="h-4 w-4 text-teal-600" aria-hidden="true"></i>
+الطوارئ مفتوحة على مدار الساعة
+</li>
+</ul>
+</div>
+</div>
+
+<p class="mt-10 border-t border-slate-100 pt-6 text-center text-xs text-slate-400">
+مستشفى النبض التخصصي لأمراض القلب — جميع الحقوق محفوظة
+</p>
+</div>
+</footer>
+
+<script type="module" src="js/landing.js"></script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="overflow-x-clip">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بوابة الطاقم | مستشفى النبض التخصصي</title>
+<meta name="description" content="بوابة الدخول الداخلية لأعضاء الطاقم الطبي في مستشفى النبض التخصصي لأمراض القلب.">
+<link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap">
+<!-- إعدادات الهوية اللونية والحركات — Tailwind يبنيها من JavaScript بلا أي ملف CSS -->
+<script src="js/tailwind-theme.js"></script>
+<script>if (localStorage.getItem("cardiac.theme") === "dark") { document.documentElement.style.backgroundColor = "#071510"; }</script>
+</head>
+<body class="min-h-screen overflow-x-clip bg-slate-50 text-slate-800 antialiased [font-family:'Cairo','Segoe_UI',Tahoma,Arial,sans-serif]">
+
+<main class="grid min-h-screen lg:grid-cols-[1.05fr_1fr]">
+
+<!-- اللوحة التعريفية -->
+<section class="relative hidden overflow-hidden lg:block">
+<img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1400&q=70"
+alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover">
+<div class="absolute inset-0 bg-ink/80" aria-hidden="true"></div>
+<img src="images/hero.svg" alt="" aria-hidden="true"
+class="absolute inset-0 h-full w-full object-cover opacity-20 mix-blend-screen">
+<div class="absolute inset-0 bg-gradient-to-t from-ink/80 to-transparent" aria-hidden="true"></div>
+
+<div class="relative flex h-full flex-col justify-between p-10 xl:p-14">
+<a href="index.html" class="flex w-fit items-center gap-3">
+<img src="images/logo.svg" alt="" aria-hidden="true" class="h-11 w-11">
+<span>
+<span class="block text-base font-bold text-white">مستشفى النبض التخصصي</span>
+<span class="block text-sm text-teal-100">لأمراض القلب والشرايين</span>
+</span>
+</a>
+
+<div class="max-w-lg">
+<h2 class="text-3xl font-bold leading-snug text-white xl:text-4xl">
+مساحة عمل واحدة لكل ما يحتاجه الفريق الطبي.
+</h2>
+<p class="mt-5 text-base leading-8 text-teal-50">
+ملفات المرضى، القراءات الحيوية، وجدول المواعيد — منظّمة ومتاحة
+لأعضاء الطاقم حسب الدور والصلاحية.
+</p>
+
+<ul class="mt-8 space-y-3">
+<li class="flex items-center gap-3 text-sm font-semibold text-teal-50">
+<span class="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-white">
+<i data-lucide="clipboard-list" class="h-4 w-4" aria-hidden="true"></i>
+</span>
+ملفات المرضى وسجلاتهم الحيوية
+</li>
+<li class="flex items-center gap-3 text-sm font-semibold text-teal-50">
+<span class="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-white">
+<i data-lucide="calendar-clock" class="h-4 w-4" aria-hidden="true"></i>
+</span>
+جدول المواعيد اليومي والقادم
+</li>
+<li class="flex items-center gap-3 text-sm font-semibold text-teal-50">
+<span class="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-white">
+<i data-lucide="shield-check" class="h-4 w-4" aria-hidden="true"></i>
+</span>
+صلاحيات محددة حسب الدور
+</li>
+</ul>
+</div>
+
+<p class="text-xs text-teal-100/80">مستشفى النبض التخصصي لأمراض القلب</p>
+</div>
+</section>
+
+<!-- لوحة الدخول -->
+<section class="flex items-center justify-center p-5 sm:p-8">
+<div class="w-full max-w-lg">
+
+<div class="mb-6 flex items-center justify-between gap-3">
+<a href="index.html"
+class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-surface px-3 py-2 text-sm font-semibold text-slate-600 shadow-sm transition duration-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300">
+<i data-lucide="arrow-right" class="h-4 w-4" aria-hidden="true"></i>
+العودة إلى موقع المستشفى
+</a>
+
+<button data-theme-toggle type="button"
+class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-surface text-slate-600 shadow-sm transition duration-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300"></button>
+</div>
+
+<div class="rounded-3xl border border-slate-200 bg-surface p-6 shadow-xl sm:p-8">
+
+<!-- مؤشر الخطوات -->
+<ol id="stepIndicator" class="mb-7 flex items-center gap-2" aria-label="مراحل الدخول">
+<li data-step-dot="access" class="h-1.5 flex-1 rounded-full bg-brand transition duration-300"></li>
+<li data-step-dot="staff" class="h-1.5 flex-1 rounded-full bg-slate-200 transition duration-300"></li>
+</ol>
+
+<!-- الخطوة الأولى: الدخول إلى البوابة -->
+<div data-step="access">
+<span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-50 text-teal-700">
+<i data-lucide="hospital" class="h-6 w-6" aria-hidden="true"></i>
+</span>
+<h1 class="mt-5 text-2xl font-bold text-slate-900">بوابة الطاقم الطبي</h1>
+<p class="mt-3 text-sm leading-7 text-slate-500">
+هذه المساحة مخصصة لأعضاء الطاقم داخل المستشفى.
+تُحدَّد الشاشات المتاحة حسب الدور الذي يتم اختياره.
+</p>
+
+<div class="mt-6 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+<p class="flex items-center gap-2 text-sm font-semibold text-slate-700">
+<i data-lucide="shield-check" class="h-4 w-4 text-teal-600" aria-hidden="true"></i>
+دخول داخلي حسب الصلاحيات
+</p>
+<p class="mt-2 text-xs leading-6 text-slate-500">
+المستشفى متخصص بأمراض القلب والشرايين، والدخول يتم بخطوتين فقط.
+</p>
+</div>
+
+<button id="startAccess" type="button"
+class="group mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand px-5 text-sm font-semibold text-white shadow-sm transition duration-300 hover:bg-brand-dark hover:shadow-md focus:outline-none focus:ring-2 focus:ring-teal-300">
+<i data-lucide="log-in" class="h-5 w-5" aria-hidden="true"></i>
+الدخول إلى بوابة الطاقم
+<i data-lucide="arrow-left" class="h-4 w-4 transition duration-300 group-hover:-translate-x-1" aria-hidden="true"></i>
+</button>
+</div>
+
+<!-- الخطوة الثانية: نوع العضو -->
+<div data-step="staff" class="hidden">
+<p class="text-xs font-bold text-teal-700">الخطوة الثانية</p>
+<h1 class="mt-2 text-2xl font-bold text-slate-900">اختر نوع العضو</h1>
+<p class="mt-3 text-sm leading-7 text-slate-500">
+تختلف الشاشات والصلاحيات حسب دور العضو داخل المستشفى.
+</p>
+
+<div class="mt-6 grid gap-3">
+<button type="button" data-staff="doctor"
+class="group relative flex items-center justify-between gap-3 overflow-hidden rounded-2xl border border-teal-200 bg-surface p-4 pr-5 text-right shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-teal-500 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-teal-300">
+<span class="absolute inset-y-0 right-0 w-1.5 bg-gradient-to-b from-teal-400 to-cyan-600" aria-hidden="true"></span>
+<span class="flex items-center gap-3">
+<span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-50 to-cyan-100 text-teal-700 transition duration-300 group-hover:scale-105">
+<i data-lucide="stethoscope" class="h-6 w-6" aria-hidden="true"></i>
+</span>
+<span>
+<span class="block font-bold text-slate-900">طبيب</span>
+<span class="block text-sm text-slate-500">ملف سريري كامل ومتابعة الحالات</span>
+</span>
+</span>
+<span class="flex items-center gap-2">
+<span class="hidden items-center gap-1 rounded-lg bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-700 sm:inline-flex">
+<span class="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span>
+متاح
+</span>
+<i data-lucide="arrow-left" class="h-5 w-5 text-slate-400 transition duration-300 group-hover:-translate-x-1 group-hover:text-teal-700" aria-hidden="true"></i>
+</span>
+</button>
+
+<button type="button" data-staff="nurse"
+class="group relative flex items-center justify-between gap-3 overflow-hidden rounded-2xl border border-teal-200 bg-surface p-4 pr-5 text-right shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-teal-500 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-teal-300">
+<span class="absolute inset-y-0 right-0 w-1.5 bg-gradient-to-b from-teal-400 to-cyan-600" aria-hidden="true"></span>
+<span class="flex items-center gap-3">
+<span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-50 to-cyan-100 text-teal-700 transition duration-300 group-hover:scale-105">
+<i data-lucide="clipboard-plus" class="h-6 w-6" aria-hidden="true"></i>
+</span>
+<span>
+<span class="block font-bold text-slate-900">تمريض</span>
+<span class="block text-sm text-slate-500">متابعة الرعاية والقراءات الحيوية</span>
+</span>
+</span>
+<span class="flex items-center gap-2">
+<span class="hidden items-center gap-1 rounded-lg bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-700 sm:inline-flex">
+<span class="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span>
+متاح
+</span>
+<i data-lucide="arrow-left" class="h-5 w-5 text-slate-400 transition duration-300 group-hover:-translate-x-1 group-hover:text-teal-700" aria-hidden="true"></i>
+</span>
+</button>
+
+<button type="button" data-staff="receptionist"
+class="group relative flex items-center justify-between gap-3 overflow-hidden rounded-2xl border border-teal-200 bg-surface p-4 pr-5 text-right shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-teal-500 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-teal-300">
+<span class="absolute inset-y-0 right-0 w-1.5 bg-gradient-to-b from-teal-400 to-cyan-600" aria-hidden="true"></span>
+<span class="flex items-center gap-3">
+<span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-50 to-cyan-100 text-teal-700 transition duration-300 group-hover:scale-105">
+<i data-lucide="calendar-days" class="h-6 w-6" aria-hidden="true"></i>
+</span>
+<span>
+<span class="block font-bold text-slate-900">موظف استقبال</span>
+<span class="block text-sm text-slate-500">تنظيم المواعيد وبيانات التسجيل</span>
+</span>
+</span>
+<span class="flex items-center gap-2">
+<span class="hidden items-center gap-1 rounded-lg bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-700 sm:inline-flex">
+<span class="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true"></span>
+متاح
+</span>
+<i data-lucide="arrow-left" class="h-5 w-5 text-slate-400 transition duration-300 group-hover:-translate-x-1 group-hover:text-teal-700" aria-hidden="true"></i>
+</span>
+</button>
+</div>
+
+<button type="button" data-back="access"
+class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition duration-300 hover:text-slate-900">
+<i data-lucide="arrow-right" class="h-4 w-4" aria-hidden="true"></i>
+رجوع
+</button>
+</div>
+
+</div>
+
+<p class="mt-6 text-center text-xs leading-6 text-slate-400">
+الدخول مخصص لأعضاء الطاقم داخل المستشفى.
+</p>
+</div>
+</section>
+</main>
+
+<script type="module" src="js/login.js"></script>
+</body>
+</html>

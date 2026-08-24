@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="overflow-x-clip">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ملف المريض | مستشفى النبض التخصصي</title>
+<meta name="description" content="الملف الطبي للمريض: البيانات الأساسية، القراءات الحيوية، المواعيد، والملاحظات.">
+<link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+
+<!-- مكتبات جاهزة من الإنترنت: Tailwind بيعطينا كلاسات التنسيق، وLucide بيحوّل كل عنصر عليه data-lucide لأيقونة، وخط Cairo للعربي -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap">
+
+<!-- ألوان المشروع وحركاته مكتوبة كإعدادات لـTailwind بدل ملف CSS، والسطر اللي بعده بيلوّن خلفية الصفحة غامق فورًا بالوضع الليلي حتى ما تلمع أبيض لحظة التحميل -->
+<script src="js/tailwind-theme.js"></script>
+<script>if (localStorage.getItem("cardiac.theme") === "dark") { document.documentElement.style.backgroundColor = "#071510"; }</script>
+</head>
+<body class="min-h-screen overflow-x-clip bg-slate-50 text-slate-800 antialiased [font-family:'Cairo','Segoe_UI',Tahoma,Arial,sans-serif]">
+
+<!-- غلاف الشاشة كلها. مخفي بالبداية عن قصد: layout.js أول ما يشتغل بيشوف مين المستخدم، فإذا ما في جلسة بيحوّله على صفحة الدخول قبل ما يبيّن، وإذا في جلسة بيشيل الـhidden وبتظهر الصفحة -->
+<div id="appShell" class="hidden min-h-screen">
+
+<!-- طبقة غامقة بتغطي الصفحة ورا القائمة الجانبية وقت ما تنفتح على الهاتف، والضغط عليها بيسكّر القائمة -->
+<div id="sidebarBackdrop" class="fixed inset-0 z-30 hidden bg-ink/50 lg:hidden"></div>
+
+<!-- القائمة الجانبية على اليمين: ثابتة ومفتوحة دايمًا على الشاشة الكبيرة، وعلى الهاتف بتكون مزحوطة برا الشاشة (translate-x-full) وبتنزلق لما تضغط زر القائمة بالهيدر -->
+<aside id="sidebar" class="fixed inset-y-0 right-0 z-40 flex w-72 translate-x-full flex-col border-l border-slate-200 bg-surface transition-transform duration-300 ease-out lg:translate-x-0">
+
+<!-- رأس القائمة: شعار المستشفى واسمه، وجنبه زر × اللي بيسكّر القائمة وما بيبيّن إلا على الهاتف -->
+<div class="flex h-16 items-center justify-between gap-3 border-b border-slate-200 px-5">
+<div class="flex items-center gap-3">
+<img src="images/logo.svg" alt="" class="h-9 w-9" aria-hidden="true">
+<div>
+<p class="text-sm font-bold text-slate-900">مستشفى النبض التخصصي</p>
+<p class="text-xs text-slate-500">لأمراض القلب والشرايين</p>
+</div>
+</div>
+<button id="closeSidebar" type="button" aria-label="إغلاق القائمة" class="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition duration-300 hover:bg-slate-50 lg:hidden">
+<i data-lucide="x" class="h-4 w-4" aria-hidden="true"></i>
+</button>
+</div>
+
+<!-- روابط شاشات النظام. كل رابط مكتوب عليه data-roles فيها الأدوار المسموح إلها تفوت الشاشة، وlayout.js بيشيل من الصفحة أي رابط مش من صلاحية المستخدم، والرابط الحالي ملوّن بالأخضر ومكتوب عليه aria-current -->
+<nav aria-label="القائمة الرئيسية" class="flex-1 space-y-1 px-3 py-4">
+<a href="dashboard.html" data-roles="طبيب,ممرضة,موظف استقبال" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition duration-300 focus:outline-none focus:ring-2 focus:ring-teal-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+<i data-lucide="layout-dashboard" class="h-4 w-4" aria-hidden="true"></i>
+<span>لوحة التحكم</span>
+</a>
+
+<a href="patients.html" data-roles="طبيب,ممرضة,موظف استقبال" aria-current="page" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition duration-300 focus:outline-none focus:ring-2 focus:ring-teal-200 bg-teal-50 text-teal-700">
+<i data-lucide="users-round" class="h-4 w-4" aria-hidden="true"></i>
+<span>المرضى</span>
+</a>
+
+<a href="vitals.html" data-roles="طبيب,ممرضة" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition duration-300 focus:outline-none focus:ring-2 focus:ring-teal-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+<i data-lucide="activity" class="h-4 w-4" aria-hidden="true"></i>
+<span>السجلات الحيوية</span>
+</a>
+
+<a href="appointments.html" data-roles="طبيب,ممرضة,موظف استقبال" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition duration-300 focus:outline-none focus:ring-2 focus:ring-teal-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+<i data-lucide="calendar-clock" class="h-4 w-4" aria-hidden="true"></i>
+<span>المواعيد</span>
+</a>
+
+<a href="reports.html" data-roles="طبيب" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition duration-300 focus:outline-none focus:ring-2 focus:ring-teal-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900">
+<i data-lucide="bar-chart-3" class="h-4 w-4" aria-hidden="true"></i>
+<span>التقارير</span>
+</a>
+</nav>
+
+<!-- آخر القائمة: رابط بيرجّعك للموقع التعريفي، وزر خروج بيمسح الجلسة من المتصفح وبيوديك على صفحة الدخول -->
+<div class="space-y-1 border-t border-slate-200 p-3">
+<a href="index.html" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 transition duration-300 hover:bg-slate-50 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-200">
+<i data-lucide="hospital" class="h-4 w-4" aria-hidden="true"></i>
+<span>موقع المستشفى</span>
+</a>
+<button data-logout type="button" class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 transition duration-300 hover:bg-rose-50 hover:text-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-200">
+<i data-lucide="log-out" class="h-4 w-4" aria-hidden="true"></i>
+<span>تسجيل الخروج</span>
+</button>
+</div>
+</aside>
+
+<!-- باقي الصفحة. الـpadding من اليمين (lg:pr-72) بيترك مكان للقائمة الجانبية على الشاشة الكبيرة حتى ما تركب فوق المحتوى -->
+<div class="lg:pr-72">
+
+<!-- الهيدر الثابت فوق الصفحة (sticky) — بيضل ظاهر وأنت بتنزل، وفيه من اليمين اسم الشاشة ومن الشمال أدوات المستخدم -->
+<header class="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-slate-200 bg-surface/90 px-4 backdrop-blur sm:px-6 lg:px-8">
+
+<!-- زر فتح القائمة (بيبيّن على الهاتف بس) وجنبه اسم الشاشة اللي أنت فيها -->
+<div class="flex items-center gap-3">
+<button id="openSidebar" type="button" aria-label="فتح القائمة" class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-600 transition duration-300 hover:bg-slate-50 lg:hidden">
+<i data-lucide="menu" class="h-5 w-5" aria-hidden="true"></i>
+</button>
+<div>
+<p class="text-sm font-bold text-slate-900 sm:text-base">ملف المريض</p>
+<p class="hidden text-xs text-slate-500 sm:block">لأمراض القلب والشرايين</p>
+</div>
+</div>
+
+<div class="flex items-center gap-2 sm:gap-3">
+
+<!-- تاريخ اليوم والساعة، وlayout.js بيكتب التاريخ مرة وحدة وبيحدّث الساعة كل ثانية. بتختفي على الشاشة الصغيرة توفيرًا للمساحة -->
+<div class="hidden items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600 md:flex">
+<i data-lucide="calendar-days" class="h-4 w-4 text-teal-600" aria-hidden="true"></i>
+<span id="headerDate"></span>
+<span class="h-3 w-px bg-slate-300" aria-hidden="true"></span>
+<i data-lucide="clock" class="h-4 w-4 text-teal-600" aria-hidden="true"></i>
+<time id="headerClock"></time>
+</div>
+
+<!-- زر الوضع الليلي/النهاري. فاضي هون عن قصد لأن theme.js بيحط جواته أيقونة شمس أو قمر حسب الوضع الحالي، والضغط عليه بيبدّل الوضع وبيعمل reload حتى Tailwind يبني الألوان الجديدة -->
+<button data-theme-toggle type="button" class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-600 transition duration-300 hover:-translate-y-0.5 hover:bg-slate-50 hover:text-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-200"></button>
+
+<!-- جرس التنبيهات: الرقم الأحمر فوقه بيعد الإشعارات اللي ما قريتها، والضغط عليه بيفتح اللوحة اللي تحت -->
+<div class="relative">
+<button id="alertsButton" type="button" aria-label="التنبيهات" aria-expanded="false" class="relative flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-600 transition duration-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-teal-200">
+<i data-lucide="bell" class="h-5 w-5" aria-hidden="true"></i>
+<span id="alertsCount" class="absolute -left-1 -top-1 hidden h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-rose-500 px-1 text-[11px] font-bold text-white"></span>
+</button>
+
+<!-- لوحة التنبيهات المنسدلة: عنوانها وزر «تعليم الكل كمقروء» مكتوبين هون، أما قائمة التنبيهات نفسها (حالات حرجة، مواعيد عاجلة، وإجراءات الزملاء) فبيعبّيها layout.js من البيانات -->
+<div id="alertsPanel" class="animate-slideDown absolute left-0 top-12 z-50 hidden w-80 max-w-[calc(100vw-2rem)] rounded-2xl border border-slate-200 bg-surface p-3 shadow-xl">
+<div class="mb-2 flex items-center justify-between border-b border-slate-100 pb-2">
+<p class="text-sm font-bold text-slate-900">التنبيهات</p>
+<button id="markAlertsRead" type="button" class="rounded-lg bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-600 transition duration-300 hover:bg-slate-200">تعليم الكل كمقروء</button>
+</div>
+<div id="alertsList" class="max-h-80 space-y-1 overflow-y-auto"></div>
+</div>
+</div>
+
+<!-- اسم صاحب الجلسة ومسماه الوظيفي ومربع فيه أول حرفين من اسمه. الاسم والحروف بيكتبهم layout.js من ملف المستخدمين، والمسمى الوظيفي مكتوب للأدوار التلاتة وبيضل منه واحد بس حسب الدور -->
+<div class="hidden items-center gap-3 sm:flex">
+<div class="text-left">
+<p id="headerUserName" class="text-sm font-bold text-slate-900"></p>
+<p class="text-xs text-slate-500">
+<span data-role-only="طبيب">طبيب قلب</span>
+<span data-role-only="ممرضة">ممرضة قسم القلب</span>
+<span data-role-only="موظف استقبال">موظف استقبال</span>
+</p>
+</div>
+<span id="headerAvatar" class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand text-sm font-bold text-white"></span>
+</div>
+
+<!-- نفس زر الخروج اللي بالقائمة بس بشكل أيقونة، موجود هون عشان يكون قريب على الشاشة الصغيرة -->
+<button data-logout type="button" aria-label="تسجيل الخروج" class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-600 transition duration-300 hover:bg-rose-50 hover:text-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-200">
+<i data-lucide="log-out" class="h-5 w-5" aria-hidden="true"></i>
+</button>
+</div>
+</header>
+
+<!-- محتوى الصفحة نفسه، وهو الجزء الوحيد اللي بيفرق من شاشة لشاشة. بيدخل بحركة خفيفة من تحت (animate-fadeUp) -->
+<main id="page-content" class="animate-fadeUp p-4 sm:p-6 lg:p-8">
+<!-- شاشة الانتظار اللي بتبيّن أول ما تفتح الصفحة، وpatient-details.js بيخفيها أول ما يجيب ملف المريض -->
+<div id="patientLoading" class="animate-fadeIn flex min-h-[220px] items-center justify-center rounded-2xl border border-slate-200 bg-surface p-8 shadow-sm" role="status">
+<div class="flex items-center gap-3 text-slate-500">
+<span class="h-5 w-5 animate-spin rounded-full border-2 border-slate-200 border-t-teal-600" aria-hidden="true"></span>
+<span class="text-sm font-medium">جاري تحميل ملف المريض...</span>
+</div>
+</div>
+
+<!-- صندوق الخطأ: بيبيّن إذا فشل تحميل البيانات، وزر «إعادة المحاولة» بيجرّب يجيبها من جديد -->
+<div id="patientError" class="hidden animate-pop rounded-2xl border border-rose-200 bg-rose-50 p-6 text-center" role="alert">
+<span class="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-surface text-rose-600">
+<i data-lucide="triangle-alert" class="h-5 w-5" aria-hidden="true"></i>
+</span>
+<p class="mt-3 text-sm font-semibold text-rose-800">تعذر تحميل ملف المريض. يرجى المحاولة مرة أخرى.</p>
+<button id="retryPatientFile" type="button" class="mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-l from-danger to-danger-dark hover:from-danger-dark hover:to-danger px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition duration-300 focus:outline-none focus:ring-2 focus:ring-rose-300">
+<i data-lucide="rotate-cw" class="h-4 w-4" aria-hidden="true"></i>
+إعادة المحاولة
+</button>
+</div>
+
+<!-- شاشة «الملف غير متاح»: بتبيّن إذا فتحت الصفحة بلا رقم مريض بالرابط أو برقم مش موجود بالسجلات. الرسالتين مكتوبتين هون وpatient-details.js بيبيّن الرسالة اللي بتناسب الحالة -->
+<div id="patientNotFound" class="hidden">
+<div class="mb-6 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+<div>
+<h1 class="text-2xl font-bold text-slate-900 sm:text-3xl">ملف المريض</h1>
+<p class="mt-2 max-w-3xl text-sm leading-7 text-slate-500">
+<span data-role-only="طبيب,ممرضة,موظف استقبال"><span data-missing="none">لم يتم تحديد المريض المطلوب.</span><span data-missing="unknown" class="hidden">لا يوجد ملف مطابق لهذا الرقم في سجلات المركز.</span></span>
+</p>
+</div>
+</div>
+<div class="animate-fadeIn rounded-2xl border border-dashed border-slate-300 bg-surface p-8 text-center">
+<span class="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
+<i data-lucide="inbox" class="h-5 w-5" aria-hidden="true"></i>
+</span>
+<h3 class="mt-3 text-sm font-bold text-slate-800">الملف غير متاح</h3>
+<p class="mt-1 text-sm text-slate-500">ارجع إلى صفحة المرضى واختر أحد الملفات المتاحة.</p>
+</div>
+<div class="mt-4">
+<a href="patients.html" class="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-surface px-4 text-sm font-semibold text-slate-700 shadow-sm transition duration-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300"><i data-lucide="arrow-right" class="h-4 w-4" aria-hidden="true"></i> العودة إلى المرضى</a>
+</div>
+</div>
+
+<!-- ملف المريض كله، مخفي لحد ما توصل بياناته وبعدين patient-details.js بيشيل الـhidden وبيبيّنه -->
+<div id="patientBody" class="hidden">
+<!-- عنوان الصفحة وأزرارها: «تسجيل قراءة» بيوديك على صفحة القراءات ورقم المريض جاهز فيها وبيبيّن للطاقم الطبي بس، «تنزيل كشف المريض» بيبني ملف HTML جاهز للطباعة من كل بيانات المريض، و«العودة» بترجّعك لقائمة المرضى -->
+<div class="mb-6 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+<div>
+<h1 class="text-2xl font-bold text-slate-900 sm:text-3xl">ملف المريض</h1>
+<p class="mt-2 max-w-3xl text-sm leading-7 text-slate-500">
+<span data-role-only="طبيب">البيانات الأساسية، المؤشرات الحيوية، المواعيد، والملاحظات الطبية.</span>
+<span data-role-only="ممرضة">البيانات الأساسية، المؤشرات الحيوية، المواعيد، والملاحظات التمريضية.</span>
+<span data-role-only="موظف استقبال">بيانات تسجيل المريض ومواعيده المرتبطة بالملف.</span>
+</p>
+</div>
+<div class="flex shrink-0 flex-wrap items-center gap-2">
+<a id="recordVitalLink" data-role-only="طبيب,ممرضة" href="vitals.html" class="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-gradient-to-l from-brand to-brand-dark hover:from-brand-dark hover:to-brand px-4 text-sm font-semibold text-white shadow-sm transition duration-300 focus:outline-none focus:ring-2 focus:ring-teal-300"><i data-lucide="activity" class="h-4 w-4" aria-hidden="true"></i> تسجيل قراءة</a>
+<button id="downloadReport" type="button" class="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-surface px-4 text-sm font-semibold text-slate-700 shadow-sm transition duration-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300"><i data-lucide="download" class="h-4 w-4" aria-hidden="true"></i> تنزيل كشف المريض</button>
+<a href="patients.html" class="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-surface px-4 text-sm font-semibold text-slate-700 shadow-sm transition duration-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300"><i data-lucide="arrow-right" class="h-4 w-4" aria-hidden="true"></i> العودة إلى المرضى</a>
+</div>
+</div>
+
+<!-- البطاقة التعريفية للمريض: صورة بأول حرفين من اسمه، اسمه وعمره وجنسه، وأربع مربعات معلومات. patient-details.js بيعبّي كل القيم من ملف المريض، والمربع التالت بيتغير حسب الدور — تشخيص للطاقم الطبي وجنس للاستقبال — وتحتها شارتين للحالة وآخر قراءة ما بيشوفهن إلا الطاقم الطبي -->
+<section class="rounded-2xl border border-slate-200 bg-surface p-5 shadow-sm">
+<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+<div class="flex items-center gap-4">
+<span id="patientInitials" class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-brand text-lg font-bold text-white"></span>
+<div class="min-w-0">
+<h2 id="patientName" class="truncate text-xl font-bold text-slate-900"></h2>
+<p id="patientSubtitle" class="mt-1 text-sm text-slate-500"></p>
+</div>
+</div>
+<div data-role-only="طبيب,ممرضة" class="flex flex-wrap items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="text-xs font-semibold text-slate-500">حالة المريض</span>
+<span data-condition-badge class="contents"></span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-xs font-semibold text-slate-500">آخر قراءة</span>
+<span data-reading-badge class="contents"></span>
+</div>
+</div>
+</div>
+
+<div class="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+<div class="rounded-xl border border-slate-200 bg-surface p-4">
+<p class="text-xs font-semibold text-slate-500">رقم الملف</p>
+<div data-field="id" class="mt-2 text-sm font-bold text-slate-900"></div>
+</div>
+<div class="rounded-xl border border-slate-200 bg-surface p-4">
+<p class="text-xs font-semibold text-slate-500">رقم الهاتف</p>
+<div data-field="phone" class="mt-2 text-sm font-bold text-slate-900"></div>
+</div>
+<div data-role-only="طبيب,ممرضة" class="rounded-xl border border-slate-200 bg-surface p-4">
+<p class="text-xs font-semibold text-slate-500">التشخيص</p>
+<div data-field="diagnosis" class="mt-2 text-sm font-bold text-slate-900"></div>
+</div>
+<div data-role-only="موظف استقبال" class="rounded-xl border border-slate-200 bg-surface p-4">
+<p class="text-xs font-semibold text-slate-500">الجنس</p>
+<div data-field="gender" class="mt-2 text-sm font-bold text-slate-900"></div>
+</div>
+<div class="rounded-xl border border-slate-200 bg-surface p-4">
+<p id="appointmentCardLabel" class="text-xs font-semibold text-slate-500">الموعد القادم</p>
+<div data-field="appointment" class="mt-2 text-sm font-bold text-slate-900"></div>
+</div>
+</div>
+
+<div id="incompleteProfile" data-role-only="طبيب,ممرضة" class="hidden mt-5 flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
+<span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface text-amber-600">
+<i data-lucide="clipboard-list" class="h-4 w-4" aria-hidden="true"></i>
+</span>
+<p class="text-xs leading-6 text-amber-800">
+ملف هذا المريض لسا ناقص — بيانات التسجيل بس موجودة. أكمل التشخيص وفصيلة الدم من نموذج «تسجيل حالة رعاية» في لوحة التحكم.
+</p>
+</div>
+
+<form id="statusForm" data-role-only="طبيب" class="mt-5 flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+<label class="flex w-full max-w-[240px] flex-col gap-2">
+<span class="text-xs font-semibold text-slate-500">تحديث حالة المريض</span>
+<select id="statusSelect" class="h-11 w-full rounded-xl border border-slate-200 bg-surface px-3 text-sm text-slate-900 shadow-sm outline-none transition duration-300 placeholder:text-slate-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-100">
+<option value="مستقرة">مستقرة</option>
+<option value="تحتاج إلى متابعة">تحتاج إلى متابعة</option>
+<option value="حرجة">حرجة</option>
+</select>
+</label>
+
+<button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-gradient-to-l from-brand to-brand-dark hover:from-brand-dark hover:to-brand px-4 text-sm font-semibold text-white shadow-sm transition duration-300 focus:outline-none focus:ring-2 focus:ring-teal-300">
+<i data-lucide="check-circle-2" class="h-4 w-4" aria-hidden="true"></i>
+اعتماد الحالة
+</button>
+
+<p class="w-full text-xs leading-6 text-slate-500 sm:w-auto sm:flex-1">
+تنعكس الحالة المعتمدة على لوحة التحكم وقوائم المرضى والتنبيهات مباشرة.
+</p>
+</form>
+
+<div data-role-only="ممرضة" class="mt-5 flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+<span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
+<i data-lucide="lock" class="h-4 w-4" aria-hidden="true"></i>
+</span>
+<p class="text-xs leading-6 text-slate-500">
+اعتماد حالة المريض من صلاحيات الطبيب المعالج. سجّلي ملاحظة تمريضية أدناه إذا لاحظتِ تغيّرًا في وضع المريض.
+</p>
+</div>
+
+<div data-role-only="موظف استقبال" class="mt-5 flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+<span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
+<i data-lucide="lock" class="h-4 w-4" aria-hidden="true"></i>
+</span>
+<p class="text-xs leading-6 text-slate-500">
+الملف السريري للمريض — الحالة والتشخيص والقراءات والملاحظات — من صلاحية الطاقم الطبي.
+صلاحية الاستقبال هنا بيانات التسجيل وتنسيق المواعيد.
+</p>
+</div>
+</section>
+
+<!-- القسم السريري كله — المؤشرات الحالية، سجل القراءات، المواعيد، والملاحظات — وما بيوصل موظف الاستقبال منه ولا سطر لأن layout.js بيشيله من الصفحة -->
+<div data-role-only="طبيب,ممرضة">
+<div class="mt-6">
+<section data-reveal class="transition duration-300 hover:-translate-y-1 hover:border-teal-300 hover:shadow-lg min-w-0 rounded-2xl border border-slate-200 bg-surface p-5 shadow-sm">
+<div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+<div>
+<h2 class="text-base font-bold text-slate-900">المؤشرات الحيوية الحالية</h2>
+<p class="mt-1 text-sm text-slate-500">آخر قراءة معتمدة في ملف المريض</p>
+</div>
+</div>
+<!-- تلات بطاقات بآخر قراءة معتمدة بملف المريض: النبض والضغط والأكسجين. العناوين ثابتة وpatient-details.js بيحط القيم، وإذا المريض لسا بلا قراءة بيكتب «غير محدد» -->
+<div class="grid gap-4 sm:grid-cols-3">
+<article class="transition duration-300 hover:-translate-y-1 hover:border-teal-300 hover:shadow-lg rounded-2xl border border-slate-200 bg-surface p-5 shadow-sm">
+<div class="flex items-start justify-between gap-4">
+<div class="min-w-0">
+<p class="text-sm font-medium text-slate-500">نبض القلب</p>
+<p data-vital="heartRate" class="mt-3 text-3xl font-bold text-slate-900"></p>
+<p class="mt-2 text-xs font-medium text-slate-400">نبضة في الدقيقة</p>
+</div>
+<span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-700">
+<i data-lucide="heart-pulse" class="h-5 w-5" aria-hidden="true"></i>
+</span>
+</div>
+</article>
+<article class="transition duration-300 hover:-translate-y-1 hover:border-teal-300 hover:shadow-lg rounded-2xl border border-slate-200 bg-surface p-5 shadow-sm">
+<div class="flex items-start justify-between gap-4">
+<div class="min-w-0">
+<p class="text-sm font-medium text-slate-500">ضغط الدم</p>
+<p data-vital="bloodPressure" class="mt-3 text-3xl font-bold text-slate-900"></p>
+<p class="mt-2 text-xs font-medium text-slate-400">انقباضي / انبساطي</p>
+</div>
+<span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sky-700">
+<i data-lucide="gauge" class="h-5 w-5" aria-hidden="true"></i>
+</span>
+</div>
+</article>
+<article class="transition duration-300 hover:-translate-y-1 hover:border-teal-300 hover:shadow-lg rounded-2xl border border-slate-200 bg-surface p-5 shadow-sm">
+<div class="flex items-start justify-between gap-4">
+<div class="min-w-0">
+<p class="text-sm font-medium text-slate-500">مستوى الأكسجين</p>
+<p data-vital="oxygenLevel" class="mt-3 text-3xl font-bold text-slate-900"></p>
+<p class="mt-2 text-xs font-medium text-slate-400">نسبة تشبع الأكسجين</p>
+</div>
+<span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+<i data-lucide="waves" class="h-5 w-5" aria-hidden="true"></i>
+</span>
+</div>
+</article>
+</div>
+</section>
+</div>
+
+<div class="mt-6 grid gap-6 xl:grid-cols-2">
+<section data-reveal class="transition duration-300 hover:-translate-y-1 hover:border-teal-300 hover:shadow-lg min-w-0 rounded-2xl border border-slate-200 bg-surface p-5 shadow-sm">
+<div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+<div>
+<h2 class="text-base font-bold text-slate-900">سجل القراءات</h2>
+<p class="mt-1 text-sm text-slate-500">القراءة المرجعية والقراءات المسجلة لاحقًا</p>
+</div>
+</div>
+<!-- سجل قراءات هذا المريض من الأقدم للأحدث: القراءة المرجعية من ملف المستشفى مع كل قراءة سجّلها الطاقم عليه. رؤوس الأعمدة ثابتة وpatient-details.js بيبني الصفوف، وإذا ما في ولا قراءة بيخفي الجدول وبيبيّن الصندوق اللي بعده -->
+<div id="vitalsHistoryTable" data-reveal class="overflow-x-auto rounded-2xl border border-slate-200 bg-surface shadow-sm">
+<table class="min-w-full divide-y divide-slate-200 text-right text-sm">
+<thead class="bg-slate-50 text-xs font-semibold text-slate-500">
+<tr>
+<th scope="col" class="whitespace-nowrap px-4 py-3">نبض القلب</th>
+<th scope="col" class="whitespace-nowrap px-4 py-3">ضغط الدم</th>
+<th scope="col" class="whitespace-nowrap px-4 py-3">الأكسجين</th>
+<th scope="col" class="whitespace-nowrap px-4 py-3">حالة القراءة</th>
+<th scope="col" class="whitespace-nowrap px-4 py-3">وقت التسجيل</th>
+</tr>
+</thead>
+<tbody id="vitalsHistoryRows" class="divide-y divide-slate-100"></tbody>
+</table>
+</div>
+<div id="vitalsHistoryEmpty" class="hidden animate-fadeIn rounded-2xl border border-dashed border-slate-300 bg-surface p-8 text-center">
+<span class="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
+<i data-lucide="inbox" class="h-5 w-5" aria-hidden="true"></i>
+</span>
+<h3 class="mt-3 text-sm font-bold text-slate-800">لا توجد قراءات</h3>
+<p class="mt-1 text-sm text-slate-500">لا توجد قراءات حيوية مسجلة لهذا المريض.</p>
+</div>
+</section>
+<section data-reveal class="transition duration-300 hover:-translate-y-1 hover:border-teal-300 hover:shadow-lg min-w-0 rounded-2xl border border-slate-200 bg-surface p-5 shadow-sm">
+<div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+<div>
+<h2 class="text-base font-bold text-slate-900">مواعيد المريض</h2>
+<p class="mt-1 text-sm text-slate-500">المواعيد المرتبطة بهذا الملف</p>
+</div>
+</div>
+<!-- جدول مواعيد هذا المريض وحده: رؤوس الأعمدة ثابتة وpatient-details.js بيبني الصفوف من نفس ملف المواعيد، والموعد اللي فات وقته بينحط عليه وسم «سابق» -->
+<div data-appointment-table data-reveal class="overflow-x-auto rounded-2xl border border-slate-200 bg-surface shadow-sm">
+<table class="min-w-full divide-y divide-slate-200 text-right text-sm">
+<thead class="bg-slate-50 text-xs font-semibold text-slate-500">
+<tr>
+<th scope="col" class="whitespace-nowrap px-4 py-3">التاريخ</th>
+<th scope="col" class="whitespace-nowrap px-4 py-3">الوقت</th>
+<th scope="col" class="whitespace-nowrap px-4 py-3">الحالة</th>
+<th scope="col" class="whitespace-nowrap px-4 py-3">السبب</th>
+</tr>
+</thead>
+<tbody data-appointment-rows class="divide-y divide-slate-100"></tbody>
+</table>
+</div>
+<div data-appointment-empty class="hidden animate-fadeIn rounded-2xl border border-dashed border-slate-300 bg-surface p-8 text-center">
+<span class="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
+<i data-lucide="inbox" class="h-5 w-5" aria-hidden="true"></i>
+</span>
+<h3 class="mt-3 text-sm font-bold text-slate-800">لا توجد مواعيد</h3>
+<p class="mt-1 text-sm text-slate-500">لا توجد مواعيد مرتبطة بهذا المريض.</p>
+</div>
+</section>
+</div>
+
+<div class="mt-6">
+<section data-reveal class="transition duration-300 hover:-translate-y-1 hover:border-teal-300 hover:shadow-lg min-w-0 rounded-2xl border border-slate-200 bg-surface p-5 shadow-sm">
+<div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+<div>
+<h2 class="text-base font-bold text-slate-900"><span data-role-only="طبيب">الملاحظات الطبية</span><span data-role-only="ممرضة">الملاحظات التمريضية</span></h2>
+<p class="mt-1 text-sm text-slate-500">يمكن تعديل أي ملاحظة أو حذفها — تُحفظ ضمن هذا الملف على الجهاز الحالي</p>
+</div>
+</div>
+<!-- نموذج كتابة ملاحظة على ملف المريض: مكتوب مرتين بنص إرشادي مختلف — طبية للطبيب وتمريضية للممرضة — وlayout.js بيشيل وحدة منهن. الملاحظات بتنحفظ بمتصفح الجهاز، وزر الإرسال بيتحوّل لـ«حفظ التعديل» لما تضغط تعديل على ملاحظة قديمة -->
+<form id="patientNoteForm" novalidate>
+<label data-role-only="طبيب" class="flex flex-col gap-2">
+<span class="text-xs font-semibold text-slate-500">نص الملاحظة</span>
+<textarea data-note-text rows="3" placeholder="اكتب ملاحظة طبية عن حالة المريض أو خطة المتابعة" class="w-full rounded-xl border border-slate-200 bg-surface p-3 text-sm leading-7 text-slate-900 shadow-sm outline-none transition duration-300 placeholder:text-slate-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-100"></textarea>
+<span data-note-error class="hidden text-xs font-semibold text-rose-600"></span>
+</label>
+<label data-role-only="ممرضة" class="flex flex-col gap-2">
+<span class="text-xs font-semibold text-slate-500">نص الملاحظة</span>
+<textarea data-note-text rows="3" placeholder="اكتب ملاحظة تمريضية عن حالة المريض أو تنفيذ الرعاية" class="w-full rounded-xl border border-slate-200 bg-surface p-3 text-sm leading-7 text-slate-900 shadow-sm outline-none transition duration-300 placeholder:text-slate-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-100"></textarea>
+<span data-note-error class="hidden text-xs font-semibold text-rose-600"></span>
+</label>
+
+<div class="mt-4 flex flex-wrap items-end gap-3">
+<label class="flex w-full max-w-[240px] flex-col gap-2">
+<span class="text-xs font-semibold text-slate-500">نوع الحالة</span>
+<select id="patientNotePriority" class="h-11 w-full rounded-xl border border-slate-200 bg-surface px-3 text-sm text-slate-900 shadow-sm outline-none transition duration-300 placeholder:text-slate-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-100">
+<option value="followUp">متابعة</option>
+<option value="urgent">عاجلة</option>
+<option value="critical">حرجة</option>
+</select>
+</label>
+
+<button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-gradient-to-l from-brand to-brand-dark hover:from-brand-dark hover:to-brand px-4 text-sm font-semibold text-white shadow-sm transition duration-300 focus:outline-none focus:ring-2 focus:ring-teal-300">
+<i data-lucide="notebook-pen" class="h-4 w-4" aria-hidden="true"></i>
+<span id="patientNoteSubmitLabel">إضافة الملاحظة</span>
+</button>
+
+<button id="cancelNoteEdit" type="button" class="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-surface px-4 text-sm font-semibold text-slate-700 shadow-sm transition duration-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-300 hidden">
+<i data-lucide="x" class="h-4 w-4" aria-hidden="true"></i>
+إلغاء التعديل
+</button>
+</div>
+</form>
+
+<div id="patientNotesList" class="mt-5"></div>
+</section>
+</div>
+</div>
+
+<!-- قسم الاستقبال: مواعيد المريض بس، وبيضل مخفي إذا كان المريض لسا ما إله ولا موعد -->
+<div data-role-only="موظف استقبال">
+<div id="receptionAppointments" class="hidden mt-6">
+<section data-reveal class="transition duration-300 hover:-translate-y-1 hover:border-teal-300 hover:shadow-lg min-w-0 rounded-2xl border border-slate-200 bg-surface p-5 shadow-sm">
+<div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+<div>
+<h2 class="text-base font-bold text-slate-900">مواعيد المريض</h2>
+<p class="mt-1 text-sm text-slate-500">المواعيد المرتبطة بهذا الملف</p>
+</div>
+</div>
+<!-- جدول مواعيد هذا المريض وحده: رؤوس الأعمدة ثابتة وpatient-details.js بيبني الصفوف من نفس ملف المواعيد، والموعد اللي فات وقته بينحط عليه وسم «سابق» -->
+<div data-appointment-table data-reveal class="overflow-x-auto rounded-2xl border border-slate-200 bg-surface shadow-sm">
+<table class="min-w-full divide-y divide-slate-200 text-right text-sm">
+<thead class="bg-slate-50 text-xs font-semibold text-slate-500">
+<tr>
+<th scope="col" class="whitespace-nowrap px-4 py-3">التاريخ</th>
+<th scope="col" class="whitespace-nowrap px-4 py-3">الوقت</th>
+<th scope="col" class="whitespace-nowrap px-4 py-3">الحالة</th>
+<th scope="col" class="whitespace-nowrap px-4 py-3">السبب</th>
+</tr>
+</thead>
+<tbody data-appointment-rows class="divide-y divide-slate-100"></tbody>
+</table>
+</div>
+<div data-appointment-empty class="hidden animate-fadeIn rounded-2xl border border-dashed border-slate-300 bg-surface p-8 text-center">
+<span class="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
+<i data-lucide="inbox" class="h-5 w-5" aria-hidden="true"></i>
+</span>
+<h3 class="mt-3 text-sm font-bold text-slate-800">لا توجد مواعيد</h3>
+<p class="mt-1 text-sm text-slate-500">لا توجد مواعيد مرتبطة بهذا المريض.</p>
+</div>
+</section>
+</div>
+</div>
+</div>
+</main>
+
+</div>
+</div>
+
+<!-- مكان رسائل «تم الحفظ» و«صار خطأ» اللي بتطلع تحت على الشمال. بيضل فاضي لحد ما ui.js يرمي فيه رسالة، وبتختفي لحالها بعد تلات ثواني -->
+<div id="toastContainer" aria-live="polite" class="fixed bottom-4 left-4 z-[60] flex w-[min(22rem,calc(100vw-2rem))] flex-col gap-2"></div>
+
+<!-- ملف الجافاسكربت الخاص بهالصفحة: بيجيب البيانات وبيعبّي الفراغات اللي فوق وبيربط الأزرار -->
+<script type="module" src="js/patient-details.js"></script>
+</body>
+</html>

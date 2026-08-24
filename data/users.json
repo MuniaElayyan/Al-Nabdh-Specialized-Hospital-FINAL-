@@ -1,0 +1,32 @@
+[
+  {
+    "id": "1",
+    "name": "د. آدم ناصر",
+    "role": "طبيب",
+    "email": "adam@hospital.com",
+    "phone": "0598001001",
+    "title": "استشاري أمراض القلب",
+    "bio": "يتابع حالات ارتفاع ضغط الدم واضطرابات النظم، ويعتمد حالة كل مريض ويشرف على خطط المتابعة الدورية.",
+    "image": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&crop=faces&w=640&h=740&q=70"
+  },
+  {
+    "id": "2",
+    "name": "لينا صالح",
+    "role": "ممرضة",
+    "email": "lina@hospital.com",
+    "phone": "0598001002",
+    "title": "ممرضة قسم القلب",
+    "bio": "تسجّل قراءات الجولة التمريضية وتتابع المؤشرات التي تحتاج انتباهًا، وتكتب الملاحظات على ملف المريض.",
+    "image": "https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&crop=faces&w=640&h=740&q=70"
+  },
+  {
+    "id": "3",
+    "name": "عمر خليل",
+    "role": "موظف استقبال",
+    "email": "omar@hospital.com",
+    "phone": "0598001003",
+    "title": "موظف استقبال",
+    "bio": "ينسّق مواعيد اليوم والمواعيد القادمة، ويستقبل المراجعين ويتابع بيانات تسجيلهم في النظام.",
+    "image": "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&crop=faces&w=640&h=740&q=70"
+  }
+]

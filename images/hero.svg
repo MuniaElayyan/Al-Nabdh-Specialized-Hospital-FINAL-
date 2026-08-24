@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" preserveAspectRatio="xMidYMid slice" role="img" aria-label="تخطيط كهربائي لنبض القلب">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="38%" stop-color="#f0fdfa"/>
+      <stop offset="72%" stop-color="#ecfeff"/>
+      <stop offset="100%" stop-color="#cffafe"/>
+    </linearGradient>
+
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#14b8a6" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#14b8a6" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="trace" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0f766e" stop-opacity="0.10"/>
+      <stop offset="22%" stop-color="#0d9488" stop-opacity="0.55"/>
+      <stop offset="62%" stop-color="#0891b2" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#0891b2" stop-opacity="0.12"/>
+    </linearGradient>
+
+    <linearGradient id="traceSoft" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0d9488" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#0d9488" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#0891b2" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- ورق تخطيط القلب: مربعات دقيقة ثم مربعات كبيرة -->
+    <pattern id="fineGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M20 0H0V20" fill="none" stroke="#0d9488" stroke-width="0.6" stroke-opacity="0.10"/>
+    </pattern>
+    <pattern id="boldGrid" width="100" height="100" patternUnits="userSpaceOnUse">
+      <path d="M100 0H0V100" fill="none" stroke="#0d9488" stroke-width="1.2" stroke-opacity="0.16"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#fineGrid)"/>
+  <rect width="1600" height="900" fill="url(#boldGrid)"/>
+
+  <circle cx="1300" cy="200" r="380" fill="url(#halo)"/>
+  <circle cx="240" cy="760" r="330" fill="url(#halo)"/>
+
+  <!-- أثر باهت أسفل الخط الرئيسي يعطي إحساس التوهج -->
+  <path d="M0 468h250l38-70 34 132 46-236 40 174h72l30-96 34 148 40-52h96l34-108 40 176 44-124 36 66h130l32-86 34 132 42-46h100l36-96 40 168 44-118 34 60h230"
+        fill="none" stroke="url(#traceSoft)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- خط التخطيط الرئيسي -->
+  <path d="M0 468h250l38-70 34 132 46-236 40 174h72l30-96 34 148 40-52h96l34-108 40 176 44-124 36 66h130l32-86 34 132 42-46h100l36-96 40 168 44-118 34 60h230"
+        fill="none" stroke="url(#trace)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- خط تخطيط ثانوي أعلى وأخف -->
+  <path d="M0 232h300l26-44 24 84 32-150 28 110h1190"
+        fill="none" stroke="#0891b2" stroke-width="2.4" stroke-opacity="0.20" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- خط تخطيط ثانوي أسفل -->
+  <path d="M0 706h420l28-48 26 92 34-164 30 120h1062"
+        fill="none" stroke="#0f766e" stroke-width="2.4" stroke-opacity="0.16" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- قلب كبير هادئ في الخلفية -->
+  <g transform="translate(1180 430) scale(1.9)" opacity="0.14">
+    <path d="M0 96C0 96-84 50-84 -4c0-30 24-54 52-54 14 0 26 6 32 16 6-10 18-16 32-16 28 0 52 24 52 54C84 50 0 96 0 96Z"
+          fill="none" stroke="#0f766e" stroke-width="4"/>
+  </g>
+
+  <!-- نقطة النبض على الخط الرئيسي -->
+  <circle cx="1178" cy="410" r="9" fill="#0d9488" opacity="0.35"/>
+  <circle cx="1178" cy="410" r="20" fill="none" stroke="#0d9488" stroke-width="2" opacity="0.18"/>
+</svg>
