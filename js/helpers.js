@@ -272,6 +272,18 @@ return true;
 return start.getTime() < currentMinute();
 }
 
+// أقدم وقت مسموح بتاريخ معيّن: إذا التاريخ هو اليوم فأقدم وقت هو الساعة الحالية،
+// وإذا كان تاريخ قادم فما في حد أدنى للوقت. بترجّع الصيغة "HH:MM" اللي بيفهمها حقل الوقت.
+export function earliestTimeForDate(dateIso) {
+if (dateIso !== todayIso()) {
+return "";
+}
+
+const now = new Date();
+
+return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+}
+
 // الفترة الزمنية للموعد: من وقت بدايته لحد ما تخلص مدته
 function getAppointmentRange(dateIso, timeValue) {
 const start = toDateTime(dateIso, timeValue);
@@ -333,6 +345,17 @@ past: appointments.filter(isPastAppointment).length
 
 export const pastDateMessage = "لا يمكن جدولة موعد في تاريخ سابق.";
 export const pastTimeMessage = "الوقت المحدد مضى اليوم — اختر وقتًا لاحقًا.";
+
+// وين بتنحط رسالة الماضي؟ إذا اليوم نفسه فات فالمشكلة بالتاريخ، وإذا التاريخ هو اليوم
+// بس الساعة مضت فالمشكلة بالوقت. مكتوبة مرة وحدة هون لأنها بتنستعمل بالتحقق قبل الحفظ
+// وبالتنبيه المباشر وقت ما المستخدم يختار، فما بتختلف الرسالة بين الشاشة والحفظ.
+export function getPastSlotErrors(dateIso, timeValue) {
+if (!isPastSlot(dateIso, timeValue)) {
+return {};
+}
+
+return String(dateIso) < todayIso() ? { date: pastDateMessage } : { time: pastTimeMessage };
+}
 
 // رسالة التعارض بتقول للمستخدم ليش انرفض الموعد بالضبط: مع مين ومتى
 export function getConflictMessage(conflictingAppointment) {
@@ -410,12 +433,8 @@ errors.time = "صيغة الوقت غير صحيحة (HH:MM).";
 }
 
 // 3) منع الماضي — الرسالة بتنحط على الحقل اللي سبّب المشكلة
-if (!errors.date && !errors.time && !keepPastSlot && isPastSlot(date, time)) {
-if (date < todayIso()) {
-errors.date = pastDateMessage;
-} else {
-errors.time = pastTimeMessage;
-}
+if (!errors.date && !errors.time && !keepPastSlot) {
+Object.assign(errors, getPastSlotErrors(date, time));
 }
 
 // 4) سبب الزيارة: لازم يكون مكتوب فعلًا مش حرف أو حرفين، حتى يعرف الفريق ليش الموعد
