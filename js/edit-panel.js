@@ -160,8 +160,10 @@ function readPanelValues(container, fields) {
  * values      القيم الحالية للصف — بتتعبّى تلقائيًا
  * onSave      دالة بتاخد القيم وبترجّع { errors } أو بترمي خطأ إذا في مشكلة
  * onDelete    اختيارية — لو موجودة بيبيّن زر الحذف داخل اللوحة
+ * onReady     اختيارية — بتنادى بعد ما تنرسم الحقول ومعها عنصر اللوحة، للشاشة اللي
+ *             بدها تظبط شي على حقولها (مثل حدود التاريخ والوقت بلوحة الموعد)
  */
-export function openEditPanel({ mount, title, subtitle = "", fields, values = {}, saveLabel = "حفظ التعديل", deleteLabel = "", onSave, onDelete, onClose }) {
+export function openEditPanel({ mount, title, subtitle = "", fields, values = {}, saveLabel = "حفظ التعديل", deleteLabel = "", onSave, onDelete, onClose, onReady }) {
   const container = typeof mount === "string" ? document.getElementById(mount) : mount;
 
   if (!container) {
@@ -221,6 +223,10 @@ export function openEditPanel({ mount, title, subtitle = "", fields, values = {}
 
   document.addEventListener("keydown", handleEscape);
   renderIcons();
+
+  if (onReady) {
+    onReady(container);
+  }
 
   // بننزّل الشاشة على اللوحة ونركّز أول حقل، حتى يبين للمستخدم إنها فتحت
   container.scrollIntoView({ behavior: "smooth", block: "nearest" });
