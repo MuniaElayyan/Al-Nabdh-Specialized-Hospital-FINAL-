@@ -27,12 +27,14 @@ notePriorityBadge,
 confirmDialog,
 showToast,
 setFieldError,
+limitToFutureSlots,
 renderIcons,
 icon
 } from "./ui.js";
 import {
 escapeHtml,
 todayIso,
+getOptionalSlotErrors,
 average,
 getRecentlyUpdatedPatients,
 validatePatientDetails,
@@ -159,10 +161,25 @@ if (!form) {
 return;
 }
 
-// أقدم تاريخ لأول زيارة هو اليوم — بنكتبه من هون لأنه بيتغير كل يوم
-document.getElementById("regVisitDate").min = todayIso();
+// أقدم تاريخ لأول زيارة هو اليوم، وإذا كانت الزيارة اليوم فأقدم وقت هو الساعة الحالية.
+// نفس الضابط المستعمل بنموذج المواعيد، فما بينفع الاستقبال يحجز أول زيارة بوقت فات.
+limitToFutureSlots(document.getElementById("regVisitDate"), document.getElementById("regVisitTime"));
+
+// بنعطي المستخدم تنبيه مبكر وهو لسا عم يعبّي، بدل ما يستنى لحد ما يضغط تسجيل.
+// نفس رسائل التحقق قبل الحفظ، فما بتختلف الرسالة بين الشاشة وطبقة القواعد.
+["regVisitDate", "regVisitTime"].forEach((elementId) => {
+document.getElementById(elementId).addEventListener("change", () => {
+const visitDate = document.getElementById("regVisitDate").value;
+const visitTime = document.getElementById("regVisitTime").value;
+const visitErrors = getOptionalSlotErrors(visitDate, visitTime);
+
+setFieldError("regVisitDateError", visitErrors.date || "");
+setFieldError("regVisitTimeError", visitErrors.time || "");
+});
+});
 
 const registrationErrorIds = { name: "regPatientNameError", phone: "regPatientPhoneError", gender: "regPatientGenderError", age: "regPatientAgeError" };
+
 
 function showRegistrationErrors(errors = {}) {
 Object.entries(registrationErrorIds).forEach(([field, errorId]) => setFieldError(errorId, errors[field] || ""));
@@ -192,6 +209,17 @@ showRegistrationErrors(result.errors);
 
 if (!result.isValid) {
 showToast("يرجى مراجعة بيانات المريض.", "error");
+return;
+}
+
+// وقت أول زيارة بينفحص قبل ما ينحفظ المريض. قبل هيك كان المريض بينتسجّل
+// وبعدين بينرفض موعده لحاله، فالنتيجة إنه النموذج ما بيعترض بشكل واضح.
+// هلق التسجيل كله بيوقف، ولازم التاريخ والوقت ينكتبوا سوا لأن الموعد ما بينحجز بواحد منهم.
+const visitErrors = getOptionalSlotErrors(visitDate, visitTime);
+
+if (visitErrors.date || visitErrors.time) {
+showRegistrationErrors(visitErrors);
+showToast(visitErrors.date || visitErrors.time, "error");
 return;
 }
 
