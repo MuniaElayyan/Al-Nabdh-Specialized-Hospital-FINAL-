@@ -689,7 +689,7 @@ return getBloodPressureError(value) === "";
 }
 
 // حدود نبض القلب: أي رقم برا هالمدى بينرفض
-export const heartRateLimits = { min: 20, max: 220 };
+export const heartRateLimits = { min: 40, max: 220 };
 
 export function getHeartRateError(value) {
 return getNumberFieldError(value, { label: "نبض القلب", min: heartRateLimits.min, max: heartRateLimits.max, unit: "نبضة/دقيقة" });
